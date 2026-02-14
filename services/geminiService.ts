@@ -1,4 +1,5 @@
-// AI features have been removed. This file is deprecated.
+
+// Gemini API features have been removed.
 export const summarizeAbstract = async (abstractText: string): Promise<string> => {
     return "";
 };

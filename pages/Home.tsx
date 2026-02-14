@@ -1,14 +1,13 @@
-
 import React, { useState, useEffect, useCallback } from 'react';
 import { ArticleCard } from '../components/ArticleCard';
 import { Pagination } from '../components/Pagination';
 import { AbstractModal } from '../components/AbstractModal';
 import { CollectionModal } from '../components/CollectionModal';
-import { WebSearchView } from '../components/WebSearchView';
 import { NetworkGraph } from '../components/NetworkGraph'; 
+import { WebSearchView } from '../components/WebSearchView';
 import { searchArticles, getArticleSummaries, getSpellingSuggestion } from '../services/pubmedService';
 import { ArticleSummary, SearchResult, SortOption, DateFilter } from '../types';
-import { Loader2, ArrowUpDown, Clock, Calendar, ChevronDown, BookOpen, Globe } from 'lucide-react';
+import { Loader2, ArrowUpDown, Clock, Calendar, ChevronDown, Globe, BookOpen } from 'lucide-react';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -34,7 +33,6 @@ export const Home: React.FC<HomeProps> = ({
   initialQuery = 'Myopia Management in Children'
 }) => {
   // --- Search State ---
-  // If initialQuery is empty (user clicked nav link), use default. Otherwise use passed query.
   const [searchInput, setSearchInput] = useState<string>(initialQuery || 'Myopia Management in Children');
   const [activeTab, setActiveTab] = useState<'articles' | 'web'>('articles');
   
@@ -111,6 +109,7 @@ export const Home: React.FC<HomeProps> = ({
   const handleSearchSubmit = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     setPage(1);
+    // Always perform article search to keep it in sync, web search updates via prop
     performSearch(searchInput, 1, sortBy, dateFilter);
   };
 
@@ -194,25 +193,27 @@ export const Home: React.FC<HomeProps> = ({
             {/* --- TOP TOOLBAR --- */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8 border-b border-slate-200 pb-6">
                 
-                {/* Source Switcher */}
-                <div className="flex bg-slate-100 p-1 rounded-xl shadow-inner">
-                    <button 
+                {/* Tabs */}
+                <div className="flex items-center gap-1 bg-slate-100 p-1.5 rounded-xl self-start">
+                    <button
                         onClick={() => setActiveTab('articles')}
-                        className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all ${activeTab === 'articles' ? 'bg-white text-navy shadow-sm ring-1 ring-black/5' : 'text-slate-500 hover:text-navy'}`}
+                        className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-bold transition-all ${activeTab === 'articles' ? 'bg-white text-navy shadow-md shadow-slate-200' : 'text-slate-500 hover:text-navy hover:bg-slate-200/50'}`}
                     >
-                        <BookOpen size={16} /> Journal Articles
+                        <BookOpen size={16} />
+                        Journal Articles
                     </button>
-                    <button 
+                    <button
                         onClick={() => setActiveTab('web')}
-                        className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all ${activeTab === 'web' ? 'bg-white text-navy shadow-sm ring-1 ring-black/5' : 'text-slate-500 hover:text-navy'}`}
+                         className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-bold transition-all ${activeTab === 'web' ? 'bg-white text-navy shadow-md shadow-slate-200' : 'text-slate-500 hover:text-navy hover:bg-slate-200/50'}`}
                     >
-                        <Globe size={16} /> Web Resources
+                        <Globe size={16} />
+                        Web Resources
                     </button>
                 </div>
 
-                {/* Filters (Sort & Date) */}
+                {/* Filters (Sort & Date) - Only show for articles */}
                 {activeTab === 'articles' && (
-                    <div className="flex items-center gap-2 sm:gap-3 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 scrollbar-hide">
+                    <div className="flex items-center gap-2 sm:gap-3 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 scrollbar-hide self-start md:self-auto">
                         
                         {/* Sort Dropdown */}
                         <div className="relative group">
@@ -233,7 +234,7 @@ export const Home: React.FC<HomeProps> = ({
                                 <Calendar size={14} />
                                 <span>
                                     {dateFilter === 'all' ? 'Any Time' : 
-                                     dateFilter === '1year' ? 'Past Year' : 'Past 5 Years'}
+                                        dateFilter === '1year' ? 'Past Year' : 'Past 5 Years'}
                                 </span>
                                 <ChevronDown size={14} className="text-slate-400" />
                             </button>
@@ -247,7 +248,8 @@ export const Home: React.FC<HomeProps> = ({
                 )}
             </div>
 
-            {activeTab === 'articles' ? (
+            {/* --- ARTICLES CONTENT --- */}
+            {activeTab === 'articles' && (
                 <>
                     {/* Visual Galaxy Graph */}
                     {articles.length > 0 && !loading && (
@@ -317,7 +319,10 @@ export const Home: React.FC<HomeProps> = ({
                         />
                     )}
                 </>
-            ) : (
+            )}
+
+            {/* --- WEB SEARCH CONTENT --- */}
+            {activeTab === 'web' && (
                 <WebSearchView query={searchInput} />
             )}
 
