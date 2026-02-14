@@ -62,6 +62,20 @@ export const NetworkGraph: React.FC<NetworkGraphProps> = ({ articles, totalResul
     particle: 'rgba(148, 163, 184, 0.5)'
   };
 
+  // Helper function to draw rounded rectangles compatible with all browsers
+  const drawRoundRect = (ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) => {
+      if (w < 2 * r) r = w / 2;
+      if (h < 2 * r) r = h / 2;
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.arcTo(x + w, y, x + w, y + h, r);
+      ctx.arcTo(x + w, y + h, x, y + h, r);
+      ctx.arcTo(x, y + h, x, y, r);
+      ctx.arcTo(x, y, x + w, y, r);
+      ctx.closePath();
+      ctx.fill();
+  };
+
   useEffect(() => {
     const width = containerRef.current?.clientWidth || 800;
     const height = containerRef.current?.clientHeight || 500;
@@ -70,18 +84,14 @@ export const NetworkGraph: React.FC<NetworkGraphProps> = ({ articles, totalResul
     const maxRadius = Math.min(width, height) * 0.45;
 
     // --- A. Generate Galaxy Particles ---
-    // Count scales logarithmically with results to look "stunning" but maintain performance
-    // Base 150 + log scale. 5,000 results => approx 400-500 particles. 
-    // We visually represent "magnitude" rather than 1:1 mapping.
     const magnitude = Math.min(totalResults, 20000);
     const particleCount = isMobile ? 100 : 150 + Math.floor(Math.sqrt(magnitude) * 3);
     
     const newParticles: Particle[] = [];
     
     for (let i = 0; i < particleCount; i++) {
-        // Spiral distribution for galaxy look
         const r = Math.random() * maxRadius * 1.4;
-        const spiralOffset = (r / maxRadius) * Math.PI; // Twist effect
+        const spiralOffset = (r / maxRadius) * Math.PI; 
         const a = Math.random() * Math.PI * 2 + spiralOffset;
 
         newParticles.push({
@@ -91,10 +101,10 @@ export const NetworkGraph: React.FC<NetworkGraphProps> = ({ articles, totalResul
             baseY: centerY,
             angle: a,
             radius: r,
-            speed: (0.0005 + Math.random() * 0.001) * (r < maxRadius * 0.5 ? 1.5 : 1), // Inner moves faster
+            speed: (0.0005 + Math.random() * 0.001) * (r < maxRadius * 0.5 ? 1.5 : 1),
             size: Math.random() * 1.5 + 0.5,
             opacity: Math.random() * 0.6 + 0.1,
-            color: Math.random() > 0.8 ? '#2DD4BF' : '#64748B' // Occasional teal spark
+            color: Math.random() > 0.8 ? '#2DD4BF' : '#64748B'
         });
     }
     particlesRef.current = newParticles;
@@ -118,23 +128,25 @@ export const NetworkGraph: React.FC<NetworkGraphProps> = ({ articles, totalResul
         spawnDelay: 0
     });
 
-    // RESULTS (Foreground Orbit)
-    articles.forEach((art, i) => {
-        newNodes.push({
-            id: art.uid,
-            type: 'result',
-            label: art.title,
-            x: centerX,
-            y: centerY,
-            targetRadius: isMobile ? maxRadius * 0.6 : maxRadius * 0.55, 
-            currentRadius: 0,
-            angle: (i / articles.length) * Math.PI * 2,
-            speed: 0.002, 
-            size: isMobile ? 6 : 8,
-            opacity: 0,
-            spawnDelay: 20 + (i * 10)
+    // RESULTS
+    if (articles && articles.length > 0) {
+        articles.forEach((art, i) => {
+            newNodes.push({
+                id: art.uid,
+                type: 'result',
+                label: art.title,
+                x: centerX,
+                y: centerY,
+                targetRadius: isMobile ? maxRadius * 0.6 : maxRadius * 0.55, 
+                currentRadius: 0,
+                angle: (i / articles.length) * Math.PI * 2,
+                speed: 0.002, 
+                size: isMobile ? 6 : 8,
+                opacity: 0,
+                spawnDelay: 20 + (i * 10)
+            });
         });
-    });
+    }
 
     nodesRef.current = newNodes;
     frameRef.current = 0;
@@ -149,16 +161,26 @@ export const NetworkGraph: React.FC<NetworkGraphProps> = ({ articles, totalResul
     if (!ctx) return;
 
     const handleResize = () => {
-        if (!containerRef.current) return;
+        if (!containerRef.current || !canvas) return;
         const rect = containerRef.current.getBoundingClientRect();
         const dpr = window.devicePixelRatio || 1;
+        
+        // Ensure dimensions are valid
+        if (rect.width === 0 || rect.height === 0) return;
+
         canvas.width = rect.width * dpr;
         canvas.height = rect.height * dpr;
-        ctx.scale(dpr, dpr);
+        
+        // Reset transform before scaling to avoid compounding
+        const context = canvas.getContext('2d');
+        if (context) {
+             context.setTransform(1, 0, 0, 1, 0, 0);
+             context.scale(dpr, dpr);
+        }
+        
         canvas.style.width = `${rect.width}px`;
         canvas.style.height = `${rect.height}px`;
         
-        // Center recalculation
         const cx = rect.width / 2;
         const cy = rect.height / 2;
         particlesRef.current.forEach(p => { p.baseX = cx; p.baseY = cy; });
@@ -168,7 +190,13 @@ export const NetworkGraph: React.FC<NetworkGraphProps> = ({ articles, totalResul
     handleResize();
 
     const animate = () => {
-        if (!containerRef.current) return;
+        if (!containerRef.current || !canvasRef.current) return;
+        
+        // Safety check for context lost
+        const cvs = canvasRef.current;
+        const ctx = cvs.getContext('2d');
+        if (!ctx) return;
+
         const width = containerRef.current.clientWidth;
         const height = containerRef.current.clientHeight;
         const centerX = width / 2;
@@ -287,9 +315,9 @@ export const NetworkGraph: React.FC<NetworkGraphProps> = ({ articles, totalResul
                     
                     // Label Bg
                     ctx.fillStyle = 'rgba(255,255,255,0.9)';
-                    ctx.beginPath();
-                    ctx.roundRect(boxX, boxY, metrics.width + pad*2, fontSize + pad*2, 4);
-                    ctx.fill();
+                    
+                    // Use helper instead of ctx.roundRect which causes crashes on older/some browsers
+                    drawRoundRect(ctx, boxX, boxY, metrics.width + pad*2, fontSize + pad*2, 4);
                     
                     // Label Text
                     ctx.shadowColor = 'transparent';

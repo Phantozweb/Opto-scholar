@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useCallback } from 'react';
 import { ArticleCard } from '../components/ArticleCard';
 import { Pagination } from '../components/Pagination';
@@ -109,7 +110,7 @@ export const Home: React.FC<HomeProps> = ({
   const handleSearchSubmit = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     setPage(1);
-    // Always perform article search to keep it in sync, web search updates via prop
+    // Always perform article search to keep it in sync
     performSearch(searchInput, 1, sortBy, dateFilter);
   };
 
