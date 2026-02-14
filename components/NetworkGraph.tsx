@@ -71,6 +71,8 @@ export const NetworkGraph: React.FC<NetworkGraphProps> = ({ articles, totalResul
 
     // --- A. Generate Galaxy Particles ---
     // Count scales logarithmically with results to look "stunning" but maintain performance
+    // Base 150 + log scale. 5,000 results => approx 400-500 particles. 
+    // We visually represent "magnitude" rather than 1:1 mapping.
     const magnitude = Math.min(totalResults, 20000);
     const particleCount = isMobile ? 100 : 150 + Math.floor(Math.sqrt(magnitude) * 3);
     
@@ -282,22 +284,11 @@ export const NetworkGraph: React.FC<NetworkGraphProps> = ({ articles, totalResul
                     
                     const boxX = node.x - metrics.width/2 - pad;
                     const boxY = node.y + 20;
-                    const w = metrics.width + pad * 2;
-                    const h = fontSize + pad * 2;
-                    const r = 4; // radius
-
-                    // Label Bg - manual rounded rect for compatibility
+                    
+                    // Label Bg
                     ctx.fillStyle = 'rgba(255,255,255,0.9)';
                     ctx.beginPath();
-                    ctx.moveTo(boxX + r, boxY);
-                    ctx.lineTo(boxX + w - r, boxY);
-                    ctx.quadraticCurveTo(boxX + w, boxY, boxX + w, boxY + r);
-                    ctx.lineTo(boxX + w, boxY + h - r);
-                    ctx.quadraticCurveTo(boxX + w, boxY + h, boxX + w - r, boxY + h);
-                    ctx.lineTo(boxX + r, boxY + h);
-                    ctx.quadraticCurveTo(boxX, boxY + h, boxX, boxY + h - r);
-                    ctx.lineTo(boxX, boxY + r);
-                    ctx.quadraticCurveTo(boxX, boxY, boxX + r, boxY);
+                    ctx.roundRect(boxX, boxY, metrics.width + pad*2, fontSize + pad*2, 4);
                     ctx.fill();
                     
                     // Label Text

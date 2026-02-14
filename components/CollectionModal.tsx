@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { X, Trash2, Download, Copy, FileText, CheckCircle2 } from 'lucide-react';
+import { X, Trash2, Download, Copy, CheckCircle2 } from 'lucide-react';
 import { ArticleSummary } from '../types';
 
 interface CollectionModalProps {
@@ -73,4 +73,84 @@ export const CollectionModal: React.FC<CollectionModalProps> = ({
         {/* Header */}
         <div className="flex justify-between items-center p-5 border-b border-slate-100 bg-slate-50/80 backdrop-blur">
           <div>
-            <h2 className="text-xl font-bold text-slate-800 flex
+            <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
+              <span className="material-symbols-outlined text-teal">bookmarks</span>
+              My Library
+            </h2>
+            <p className="text-sm text-slate-500 mt-1">
+              {savedArticles.length} saved article{savedArticles.length !== 1 && 's'}
+            </p>
+          </div>
+          <button 
+            onClick={onClose}
+            className="text-slate-400 hover:text-slate-600 p-2 hover:bg-slate-100 rounded-full transition-colors"
+          >
+            <X size={24} />
+          </button>
+        </div>
+
+        {/* Content */}
+        <div className="flex-grow overflow-y-auto p-0 bg-slate-50/50">
+          {savedArticles.length === 0 ? (
+            <div className="flex flex-col items-center justify-center h-64 text-center p-8">
+              <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mb-4 text-slate-400">
+                <span className="material-symbols-outlined text-3xl">bookmark_border</span>
+              </div>
+              <h3 className="text-lg font-bold text-slate-700 mb-2">Your library is empty</h3>
+              <p className="text-slate-500 max-w-xs">Save articles from search results to build your collection for citation and review.</p>
+            </div>
+          ) : (
+            <div className="divide-y divide-slate-100">
+              {savedArticles.map((article) => (
+                <div key={article.uid} className="p-5 bg-white hover:bg-slate-50 transition-colors group flex gap-4">
+                  <div className="flex-grow cursor-pointer" onClick={() => onArticleClick(article.uid)}>
+                    <h3 className="font-bold text-slate-800 mb-2 group-hover:text-teal transition-colors line-clamp-2">
+                      {article.title}
+                    </h3>
+                    <div className="flex flex-wrap gap-2 text-xs text-slate-500 mb-2">
+                      <span className="font-medium text-slate-700">{article.authors?.[0]?.name} et al.</span>
+                      <span>•</span>
+                      <span className="italic">{article.fulljournalname || article.source}</span>
+                      <span>•</span>
+                      <span>{article.pubdate}</span>
+                    </div>
+                  </div>
+                  
+                  <div className="flex flex-col gap-2 items-end justify-start pl-2">
+                    <button 
+                      onClick={() => onRemove(article.uid)}
+                      className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                      title="Remove from library"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                    <button 
+                      onClick={() => handleCopyCitation(article)}
+                      className={`p-2 rounded-lg transition-colors ${copiedId === article.uid ? 'text-green-600 bg-green-50' : 'text-slate-400 hover:text-teal hover:bg-teal-light'}`}
+                      title="Copy Citation"
+                    >
+                      {copiedId === article.uid ? <CheckCircle2 size={16} /> : <Copy size={16} />}
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Footer */}
+        {savedArticles.length > 0 && (
+          <div className="p-4 bg-white border-t border-slate-100 flex justify-end gap-3 z-20">
+             <button 
+                onClick={handleExportCSV}
+                className="flex items-center gap-2 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg font-bold text-sm transition-colors"
+             >
+                <Download size={16} />
+                Export CSV
+             </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
