@@ -1,0 +1,72 @@
+
+export const PUBMED_API_BASE = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils';
+
+export const MOCK_ABSTRACT = `
+Background: This is a placeholder abstract because sometimes the API request might fail due to CORS or network issues in a demo environment. 
+Methods: We implemented a React application using Tailwind CSS and TypeScript.
+Results: The application successfully fetches data from PubMed.
+Conclusion: This tool is useful for researchers.
+`;
+
+export const JOURNAL_OPTIONS = [
+  { label: "Advances in Ophthalmology Practice and Research", value: "Advances in Ophthalmology Practice and Research" },
+  { label: "AJO International", value: "AJO International" },
+  { label: "American Journal of Ophthalmology", value: "American Journal of Ophthalmology" },
+  { label: "American Journal of Ophthalmology Case Reports", value: "American Journal of Ophthalmology Case Reports" },
+  { label: "Annual Review of Vision Science", value: "Annual Review of Vision Science" },
+  { label: "Arquivos Brasileiros de Oftalmologia", value: "Arquivos Brasileiros de Oftalmologia" },
+  { label: "Asia-Pacific Journal of Ophthalmology", value: "Asia-Pacific Journal of Ophthalmology" },
+  { label: "Beyoglu Eye Journal", value: "Beyoglu Eye Journal" },
+  { label: "BMC Ophthalmology", value: "BMC Ophthalmology" },
+  { label: "BMJ Open Ophthalmology", value: "BMJ Open Ophthalmology" },
+  { label: "British and Irish Orthoptic Journal", value: "British and Irish Orthoptic Journal" },
+  { label: "British Journal of Ophthalmology", value: "Br J Ophthalmol" },
+  { label: "Case Reports in Ophthalmological Medicine", value: "Case Reports in Ophthalmological Medicine" },
+  { label: "Case Reports in Ophthalmology", value: "Case Reports in Ophthalmology" },
+  { label: "Clinical and Experimental Optometry", value: "Clinical and Experimental Optometry" },
+  { label: "Clinical Ophthalmology", value: "Clinical Ophthalmology" },
+  { label: "Clinical Optometry", value: "Clinical Optometry" },
+  { label: "Community Eye Health", value: "Community Eye Health" },
+  { label: "Contact Lens & Anterior Eye", value: "Contact Lens & Anterior Eye" },
+  { label: "Cornea", value: "Cornea" },
+  { label: "Digital Journal of Ophthalmology", value: "Digital Journal of Ophthalmology" },
+  { label: "Eye & Contact Lens", value: "Eye & Contact Lens" },
+  { label: "Eye and Brain", value: "Eye and Brain" },
+  { label: "Eye and Vision", value: "Eye and Vision" },
+  { label: "Frontiers in Ophthalmology", value: "Frontiers in Ophthalmology" },
+  { label: "GMS Ophthalmology Cases", value: "GMS Ophthalmology Cases" },
+  { label: "Indian Journal of Ophthalmology", value: "Indian Journal of Ophthalmology" },
+  { label: "International Journal of Ophthalmology", value: "International Journal of Ophthalmology" },
+  { label: "International Journal of Retina and Vitreous", value: "International Journal of Retina and Vitreous" },
+  { label: "Investigative Ophthalmology & Visual Science", value: "Investigative Ophthalmology & Visual Science" },
+  { label: "JAMA Ophthalmology", value: "JAMA Ophthalmology" },
+  { label: "Journal of Current Glaucoma Practice", value: "Journal of Current Glaucoma Practice" },
+  { label: "Journal of Current Ophthalmology", value: "Journal of Current Ophthalmology" },
+  { label: "Journal of Eye Movement Research", value: "Journal of Eye Movement Research" },
+  { label: "Journal of Medical Optometry", value: "Journal of Medical Optometry" },
+  { label: "Journal of Ophthalmic & Vision Research", value: "Journal of Ophthalmic & Vision Research" },
+  { label: "Journal of Ophthalmic Inflammation and Infection", value: "Journal of Ophthalmic Inflammation and Infection" },
+  { label: "Journal of Ophthalmology", value: "Journal of Ophthalmology" },
+  { label: "Journal of Optometry", value: "Journal of Optometry" },
+  { label: "Journal of Vision", value: "Journal of Vision" },
+  { label: "Korean Journal of Ophthalmology", value: "Korean Journal of Ophthalmology" },
+  { label: "Medical hypothesis discovery and innovation in ophthalmology", value: "Medical hypothesis discovery and innovation in ophthalmology" },
+  { label: "Medical hypothesis, discovery & innovation in optometry", value: "Medical hypothesis, discovery & innovation in optometry" },
+  { label: "Molecular Vision", value: "Molecular Vision" },
+  { label: "Oman Journal of Ophthalmology", value: "Oman Journal of Ophthalmology" },
+  { label: "Ophthalmic and Physiological Optics", value: "Ophthalmic and Physiological Optics" },
+  { label: "Ophthalmic Research", value: "Ophthalmic Research" },
+  { label: "Ophthalmology and Therapy", value: "Ophthalmology and Therapy" },
+  { label: "Ophthalmology Science", value: "Ophthalmology Science" },
+  { label: "Optometry & Visual Performance", value: "Optometry & Visual Performance" },
+  { label: "Optometry and Vision Science", value: "Optometry and Vision Science" },
+  { label: "Retina", value: "Retina" },
+  { label: "Review of Optometry", value: "Review of Optometry" },
+  { label: "Romanian Journal of Ophthalmology", value: "Romanian Journal of Ophthalmology" },
+  { label: "Saudi Journal of Ophthalmology", value: "Saudi Journal of Ophthalmology" },
+  { label: "Scandinavian Journal of Optometry and Visual Science", value: "Scandinavian Journal of Optometry and Visual Science" },
+  { label: "Taiwan Journal of Ophthalmology", value: "Taiwan Journal of Ophthalmology" },
+  { label: "Therapeutic Advances in Ophthalmology", value: "Therapeutic Advances in Ophthalmology" },
+  { label: "TVST", value: "TVST" },
+  { label: "Vision", value: "Vision" }
+];
